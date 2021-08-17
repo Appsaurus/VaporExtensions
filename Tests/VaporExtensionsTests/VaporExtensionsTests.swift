@@ -1,8 +1,4 @@
-
-@testable import VaporExtensions
 import ExampleApp
-import XCTest
-import XCTVapor
 import VaporTestUtils
 
 final class VaporExtensionsTests: VaporTestCase {
