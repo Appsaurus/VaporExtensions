@@ -1,16 +1,20 @@
-import XCTest
-@testable import VaporExtensions
 
-final class VaporExtensionsTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(VaporExtensions().text, "Hello, World!")
+@testable import VaporExtensions
+import ExampleApp
+import XCTest
+import XCTVapor
+import VaporTestUtils
+
+final class VaporExtensionsTests: VaporTestCase {
+
+    override var configurer: AppConfigurer{
+        return ExampleApp.configure
     }
 
-
-    static var allTests = [
-        ("testExample", testExample),
-    ]
+    func testMyApp() throws {
+        try app.test(.GET, "testing-vapor-apps") { response in
+            XCTAssertEqual(response.status, .ok)
+            XCTAssert(response.has(content: "is super easy"))
+        }
+    }
 }
