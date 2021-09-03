@@ -10,7 +10,7 @@ import Vapor
 
 public extension Future where Value: Vapor.OptionalType {
     func assertExists(orAbortWithStatus httpStatus: HTTPStatus = .notFound,
-                      reasonPhrase: String? = nil) throws -> Future<Value.WrappedType> {
+                      reasonPhrase: String? = nil) -> Future<Value.WrappedType> {
         let phrase = reasonPhrase ?? "That \(Value.self) does not exist"
         return unwrap(or: Abort(.status(httpStatus, phrase)))
 

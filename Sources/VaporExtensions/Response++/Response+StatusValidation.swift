@@ -55,7 +55,7 @@ public extension Future where Value: Response{
     }
 
     @discardableResult
-    func throwIf<S: Sequence>(statusCode unacceptableStatusCodes: S) throws -> Future<Value> where S.Iterator.Element == UInt {
+    func throwIf<S: Sequence>(statusCode unacceptableStatusCodes: S) -> Future<Value> where S.Iterator.Element == UInt {
         return self.flatMapThrowing { response in
             return try response.throwIf(statusCode: unacceptableStatusCodes)
         }

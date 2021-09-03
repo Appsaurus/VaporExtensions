@@ -179,25 +179,3 @@ public func destructure<A, B, C, D, E>(_ tuple: ((((A, B), C), D), E)) -> (A, B,
     let ((((a, b), c), d), e) = tuple
     return (a, b, c, d, e)
 }
-
-
-
-//
-//
-//extension Future {
-//    @inlinable
-//    public func flatMapThrow<NewValue>(file: StaticString = #file, line: UInt = #line, _ callback: @escaping (Value) -> EventLoopFuture<NewValue>) throws -> EventLoopFuture<NewValue> {
-//        return flatMap { value in
-//            do {
-//                return try callback(value)
-//            }
-//            catch {
-//                return eventLoop.makeFailedFuture(error)
-//            }
-//        }
-//    }
-//
-//    func flatMap<V>(to: V.Type, _ closure: @escaping (Value) throws -> Future<V>) {
-//
-//    }
-//}
