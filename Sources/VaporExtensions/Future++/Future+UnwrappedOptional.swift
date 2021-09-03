@@ -19,4 +19,13 @@ public extension Future where Value: Vapor.OptionalType {
             return self.unwrap(or: Abort(.internalServerError))
         }
     }
+
+    func unwrap(orFailWith error: Error) -> Future<Value.WrappedType> {
+        return flatMap { value in
+            guard let value = value.wrapped else {
+                return self.eventLoop.fail(with: error)
+            }
+            return self.eventLoop.future(value)
+        }
+    }
 }
