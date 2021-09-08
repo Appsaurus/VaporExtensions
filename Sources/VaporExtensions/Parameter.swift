@@ -13,6 +13,21 @@ public protocol Parameter {
     static var parameter: String { get }
 }
 
+extension Int: Parameter {
+    public typealias ResolvedParameter = Int
+    public static var parameter: String { "int" }
+}
+
+extension String: Parameter {
+    public typealias ResolvedParameter = Int
+    public static var parameter: String { "string" }
+}
+
+extension UUID: Parameter {
+    public typealias ResolvedParameter = UUID
+    public static var parameter: String { "uuid" }
+}
+
 public extension Parameters {
 
     func next<P>(_ parameter: P.Type) throws -> P.ResolvedParameter where P: Parameter {
