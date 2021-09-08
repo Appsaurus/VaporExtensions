@@ -13,7 +13,11 @@ public protocol EventLoopReferencing {
 
 extension Request: EventLoopReferencing {}
 extension EventLoopFuture: EventLoopReferencing {}
-
+extension Application: EventLoopReferencing {
+    public var eventLoop: EventLoop {
+        return eventLoopGroup.next()
+    }
+}
 public extension EventLoop {
     func fail<V>(with error: Error) -> EventLoopFuture<V> {
         future(error: error)
@@ -38,6 +42,18 @@ public extension EventLoopFuture {
             }
             return self.toFuture(value)
         }
+    }
+
+    func mapAsserting<V>(_ check: @escaping (Value) -> Bool,
+                         orFailWith error: Error,
+                         completion: @escaping (Value) -> V) -> Future<V> {
+        return assert(check, orFailWith: error).map(completion)
+    }
+
+    func flatMapAsserting<V>(_ check: @escaping (Value) -> Bool,
+                         orFailWith error: Error,
+                         completion: @escaping (Value) -> Future<V>) -> Future<V> {
+        return assert(check, orFailWith: error).flatMap(completion)
     }
 }
 
