@@ -13,10 +13,6 @@ public protocol Parameter {
     static var parameter: String { get }
 }
 
-public extension Parameter {
-    static var parameter: String { ":id" }
-}
-
 public extension Parameters {
 
     func next<P>(_ parameter: P.Type) throws -> P.ResolvedParameter where P: Parameter {
