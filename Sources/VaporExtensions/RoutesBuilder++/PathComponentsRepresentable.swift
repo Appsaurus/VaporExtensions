@@ -19,6 +19,10 @@ extension PathComponent: PathComponentRepresentable {
 
 extension String: PathComponentRepresentable {
     public var pathComponent: PathComponent {
+
+        if first == ":" {
+            return .parameter(String(dropFirst()))
+        }
         return .constant(self)
     }
 }

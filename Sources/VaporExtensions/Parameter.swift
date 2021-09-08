@@ -11,6 +11,14 @@ import Vapor
 public protocol Parameter {
     associatedtype ResolvedParameter: LosslessStringConvertible
     static var parameter: String { get }
+    static var pathComponent: PathComponent { get }
+}
+extension PathComponentRepresentable where Self: Parameter {
+
+}
+
+extension Parameter {
+    public static var pathComponent: PathComponent { .parameter(parameter) }
 }
 
 extension Int: Parameter {
