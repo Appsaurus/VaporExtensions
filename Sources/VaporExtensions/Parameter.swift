@@ -38,7 +38,7 @@ extension UUID: Parameter {
 
 public extension Parameters {
 
-    func next<P>(_ parameter: P.Type) throws -> P.ResolvedParameter where P: Parameter {
+    func next<P>(_ parameter: P.Type = P.self) throws -> P.ResolvedParameter where P: Parameter {
         return try self.require(P.parameter, as: P.ResolvedParameter.self)
     }
 }
