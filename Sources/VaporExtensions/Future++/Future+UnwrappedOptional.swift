@@ -29,6 +29,16 @@ public extension Future where Value: Vapor.OptionalType {
 //        }
 //    }
 
+    func unwrap(or resolve: @escaping () -> Future<Value.WrappedType>) -> Future<Value.WrappedType> {
+        return flatMap { optional in
+            guard let _ = optional.wrapped else {
+                return resolve()
+            }
+            return self.unwrap(or: Abort(.internalServerError))
+        }
+    }
+
+
     func flatMapUnwrapped<V>(or error: Error,
                              completion: @escaping (Value.WrappedType) -> Future<V>) -> Future<V> {
         return self.unwrap(or: error).flatMap(completion)
