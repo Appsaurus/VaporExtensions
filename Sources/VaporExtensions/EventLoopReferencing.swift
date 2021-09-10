@@ -32,6 +32,14 @@ public extension EventLoopReferencing {
     func toFuture<V>(_ value: V) -> EventLoopFuture<V> {
         eventLoop.future(value)
     }
+
+    func toFutureSuccess() -> Future<Void> {
+        eventLoop.makeSucceededVoidFuture()
+    }
+
+    func future<V>(_ value: V) -> Future<V> {
+        toFuture(value)
+    }
 }
 
 public extension EventLoopFuture {
@@ -56,4 +64,3 @@ public extension EventLoopFuture {
         return assert(check, orFailWith: error).flatMap(completion)
     }
 }
-

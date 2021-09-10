@@ -33,3 +33,9 @@ public extension Collection where Element == PathComponentRepresentable {
     }
 }
 
+
+public extension RoutesBuilder {
+    func grouped(_ pathComponent: PathComponentRepresentable...) -> RoutesBuilder {
+        return grouped(pathComponent.pathComponents)
+    }
+}
