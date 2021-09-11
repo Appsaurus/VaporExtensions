@@ -47,18 +47,30 @@ public extension Storage {
     }
 }
 
-
 open class RequestStorableMiddleware<S: Storable>: Middleware {
-    open var valueProvider: ((Request) -> Future<S?>) = { $0.future(nil) }
+    open var valueProvider: (Request) -> S? = { _ in return nil }
+    open var asyncValueProvider: ((Request) -> Future<S?>) = { $0.future(nil) }
 
     open func respond(to req: Request, chainingTo next: Responder) -> EventLoopFuture<Response> {
-        return self.provideValue(for: req).flatMap { storedValue in
-            req.storage.set(storedValue)
+        func respond(setting value: S?) -> EventLoopFuture<Response> {
+            req.storage.set(value)
             return next.respond(to: req)
+        }
+        if let value = self.provideValue(for: req) {
+            return respond(setting: value)
+        }
+        else {
+            return self.provideValueAsync(for: req).flatMap { value in
+                return respond(setting: value)
+            }
         }
     }
 
-    open func provideValue(for req: Request) -> Future<S?> {
+    open func provideValue(for req: Request) -> S? {
         return valueProvider(req)
+    }
+
+    open func provideValueAsync(for req: Request) -> Future<S?> {
+        return asyncValueProvider(req)
     }
 }
