@@ -8,7 +8,7 @@
 import Vapor
 
 public protocol Cacheable: Codable {
-    static var cacheKey: String { get set }
+    static var cacheKey: String { get }
     static var defaultValue: Self? { get }
 }
 
