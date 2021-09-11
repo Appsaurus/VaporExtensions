@@ -51,6 +51,8 @@ open class RequestStorableMiddleware<S: Storable>: Middleware {
     open var valueProvider: (Request) -> S? = { _ in return nil }
     open var asyncValueProvider: ((Request) -> Future<S?>) = { $0.future(nil) }
 
+    public init(){}
+
     open func respond(to req: Request, chainingTo next: Responder) -> EventLoopFuture<Response> {
         func respond(setting value: S?) -> EventLoopFuture<Response> {
             req.storage.set(value)

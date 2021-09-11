@@ -45,6 +45,7 @@ public extension Cache {
 }
 
 open class RequestCacheableMiddleware<C: Cacheable>: Middleware {
+    public init(){}
 
     open func respond(to req: Request, chainingTo next: Responder) -> EventLoopFuture<Response> {
         return req.application.cache.get(C.self).flatMap { cachedValue in
