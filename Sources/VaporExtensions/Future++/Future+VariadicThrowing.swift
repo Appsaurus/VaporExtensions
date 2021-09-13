@@ -13,7 +13,7 @@ import NIO
 ///         // ...
 ///     }
 ///
-public func mapThrowing<A, B, Result>(
+public func map<A, B, Result>(
     to result: Result.Type = Result.self,
     _ futureA: Future<A>,
     _ futureB: Future<B>,
@@ -30,7 +30,7 @@ public func mapThrowing<A, B, Result>(
 ///         // ...
 ///     }
 ///
-public func flatMapThrowing<A, B, Result>(
+public func flatMap<A, B, Result>(
     to result: Result.Type = Result.self,
     _ futureA: Future<A>,
     _ futureB: Future<B>,
@@ -47,7 +47,7 @@ public func flatMapThrowing<A, B, Result>(
 ///         // ...
 ///     }
 ///
-public func mapThrowing<A, B, C, Result>(
+public func map<A, B, C, Result>(
     to result: Result.Type = Result.self,
     _ futureA: Future<A>,
     _ futureB: Future<B>,
@@ -66,7 +66,7 @@ public func mapThrowing<A, B, C, Result>(
 ///         // ...
 ///     }
 ///
-public func flatMapThrowing<A, B, C, Result>(
+public func flatMap<A, B, C, Result>(
     to result: Result.Type = Result.self,
     _ futureA: Future<A>,
     _ futureB: Future<B>,
@@ -85,7 +85,7 @@ public func flatMapThrowing<A, B, C, Result>(
 ///         // ...
 ///     }
 ///
-public func mapThrowing<A, B, C, D, Result>(
+public func map<A, B, C, D, Result>(
     to result: Result.Type = Result.self,
     _ futureA: Future<A>,
     _ futureB: Future<B>,
@@ -105,7 +105,7 @@ public func mapThrowing<A, B, C, D, Result>(
 ///         // ...
 ///     }
 ///
-public func flatMapThrowing<A, B, C, D, Result>(
+public func flatMap<A, B, C, D, Result>(
     to result: Result.Type = Result.self,
     _ futureA: Future<A>,
     _ futureB: Future<B>,
@@ -125,7 +125,7 @@ public func flatMapThrowing<A, B, C, D, Result>(
 ///         // ...
 ///     }
 ///
-public func mapThrowing<A, B, C, D, E, Result>(
+public func map<A, B, C, D, E, Result>(
     to result: Result.Type = Result.self,
     _ futureA: Future<A>,
     _ futureB: Future<B>,
@@ -146,7 +146,7 @@ public func mapThrowing<A, B, C, D, E, Result>(
 ///         // ...
 ///     }
 ///
-public func flatMapThrowing<A, B, C, D, E, Result>(
+public func flatMap<A, B, C, D, E, Result>(
     to result: Result.Type = Result.self,
     _ futureA: Future<A>,
     _ futureB: Future<B>,
