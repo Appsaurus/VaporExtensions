@@ -27,14 +27,7 @@ public extension Storage {
     }
 
     mutating func set<S: Storable>(_ value: S?){
-        self[S.StorableKey.self] = value
-    }
-
-    func assert<S: Storable>(_ type: S.Type = S.self) -> S {
-        guard let value = self.get(S.StorableKey.self) else {
-            fatalError("\(StorableError.didNotInstantiateStorableValue(type: type).localizedDescription). Use application.cache = ...")
-        }
-        return value
+        return set(S.StorableKey.self, to: value)        
     }
 
     subscript<S: Storable>(_ type: S.Type = S.self) -> S? {
@@ -44,6 +37,14 @@ public extension Storage {
         set(newValue) {
             self.set(newValue)
         }
+    }
+
+
+    func assert<S: Storable>(_ type: S.Type = S.self) -> S {
+        guard let value = self.get(S.StorableKey.self) else {
+            fatalError("\(StorableError.didNotInstantiateStorableValue(type: type).localizedDescription). Use application.storage.set = ...")
+        }
+        return value
     }
 }
 
