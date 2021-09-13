@@ -27,7 +27,7 @@ extension Int: Parameter {
 }
 
 extension String: Parameter {
-    public typealias ResolvedParameter = Int
+    public typealias ResolvedParameter = String
     public static var parameter: String { "string" }
 }
 
