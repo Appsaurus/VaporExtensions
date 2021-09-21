@@ -53,8 +53,7 @@ public extension RoutesBuilder {
     func on<R: ResponseEncodable>(_ method: HTTPMethod,
                                   _ path: [PathComponentRepresentable],
                                   use closure: @escaping (Request) throws -> R) -> Route {
-        on(method, path.pathComponents, use: closure)
-        
+        on(method, path.pathComponents, use: closure)        
     }
 }
 
