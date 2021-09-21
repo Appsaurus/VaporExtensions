@@ -45,18 +45,18 @@ class RouteParameterTests: VaporTestCase {
 
     }
 
-//    func applyFilter(for property: PropertyInfo, to query: QueryBuilder<M.Database, M>, on request: Request) throws {
-//        let parameter: String = property.name
-//        if let queryFilter = try? request.stringKeyPathFilter(for: property.name, at: parameter) {
-//            let _ = try? query.filter(queryFilter)
-////            if property.type == Bool.self {
-////                let _ = try? query.filterAsBool(queryFilter)
-////            }
-////            else  {
-////                let _ = try? query.filter(queryFilter)
-////            }
-//        }
-//    }
+    //    func applyFilter(for property: PropertyInfo, to query: QueryBuilder<M.Database, M>, on request: Request) throws {
+    //        let parameter: String = property.name
+    //        if let queryFilter = try? request.stringKeyPathFilter(for: property.name, at: parameter) {
+    //            let _ = try? query.filter(queryFilter)
+    ////            if property.type == Bool.self {
+    ////                let _ = try? query.filterAsBool(queryFilter)
+    ////            }
+    ////            else  {
+    ////                let _ = try? query.filter(queryFilter)
+    ////            }
+    //        }
+    //    }
 }
 
 
@@ -227,22 +227,22 @@ extension LocalBusinessSearch {
                 try container.encode(value, forKey: .category)
             case .subcategory(let value):
                 try container.encode(value, forKey: .subcategory)
+            }
         }
     }
-}
 
     public enum LocalBusinessSearchSuggestionDTO: Codable, Equatable {
         public static func == (lhs: LocalBusinessSearchSuggestionDTO, rhs: LocalBusinessSearchSuggestionDTO) -> Bool {
             switch (lhs, rhs) {
-                case (.keyword(let lhsValue), .keyword(let rhsValue)):
-                    return lhsValue == rhsValue
-                case (.category(let lhsValue), .category(let rhsValue)):
-                    return lhsValue == rhsValue
-                case (.subcategory(let lhsValue), .subcategory(let rhsValue)):
-                    return lhsValue == rhsValue
-                case (.attribute(let lhsValue), .attribute(let rhsValue)):
-                    return lhsValue == rhsValue
-                default: return false
+            case (.keyword(let lhsValue), .keyword(let rhsValue)):
+                return lhsValue == rhsValue
+            case (.category(let lhsValue), .category(let rhsValue)):
+                return lhsValue == rhsValue
+            case (.subcategory(let lhsValue), .subcategory(let rhsValue)):
+                return lhsValue == rhsValue
+            case (.attribute(let lhsValue), .attribute(let rhsValue)):
+                return lhsValue == rhsValue
+            default: return false
             }
         }
 
@@ -285,8 +285,9 @@ extension LocalBusinessSearch {
                 try container.encode(value, forKey: .subcategory)
             case .attribute(let value):
                 try container.encode(value, forKey: .attribute)
+            }
         }
     }
-    }
+    
 
-
+}
