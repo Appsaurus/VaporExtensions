@@ -16,7 +16,21 @@ class RouteParameterTests: VaporTestCase {
     override func addRoutes(to router: Routes) throws {
         try super.addRoutes(to: router)
         router.get(basePath, Int.pathComponent, use: respond)
+        router.post(basePath, "search") { (request: Request) throws -> Future<LocalBusinessSearch> in
+//            request.body.collect(max: nil)
+//            .map { String(data: $0, encoding: .utf8) }
+//            .map { bodyString in
+//
+//            }
+            return request.body.collect(max: nil).unwrap(or: Abort(.badRequest)).tryMap { body in
+//                let decoder = JSONDecoder()
+//                decoder.dateDecodingStrategy = .iso8601
+//                let data = Data(buffer: body, byteTransferStrategy: .automatic)
+                let search = try request.content.decode(LocalBusinessSearch.self)
+                return search
 
+            }
+        }
         for route in app.routes.all {
             debugPrint(route.path.string)
         }
@@ -288,6 +302,6 @@ extension LocalBusinessSearch {
             }
         }
     }
-    
+
 
 }
