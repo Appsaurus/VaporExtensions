@@ -13,7 +13,7 @@ public typealias AppConfigurer = (_ app: Application) throws -> Void
 open class VaporTestCase: XCTestCase {
 
     open lazy var loggingLevel: LoggingLevel = .none
-    
+
     open var app: Application!
 
     open var configurer: AppConfigurer{
@@ -26,18 +26,17 @@ open class VaporTestCase: XCTestCase {
         try addConfiguration(to: app)
     }
 
-    override open func tearDown() {
-        super.tearDown()
+    open override func tearDownWithError() throws {
+        try super.tearDownWithError()
         app.shutdown()
     }
 
     open func createApplication() throws -> Application {
-        let app = Application(.testing)
-        try configurer(app)
-        return app
+        Application(.testing)
     }
 
     open func addConfiguration(to app: Application) throws {
+        try configurer(app)
         try addRoutes(to: app.routes)
     }
 

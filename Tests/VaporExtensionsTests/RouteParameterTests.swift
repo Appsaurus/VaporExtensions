@@ -9,12 +9,28 @@ import XCTest
 import XCTVapor
 import VaporExtensions
 import VaporTestUtils
+import CoreFoundation
 
 class RouteParameterTests: VaporTestCase {
     let basePath = "path"
-
+    let encoder: JSONEncoder = {
+        var e = JSONEncoder()
+        e.dateEncodingStrategy = .iso8601
+        return e
+    }()
+    let decoder: JSONDecoder = {
+        var d = JSONDecoder()
+        d.dateDecodingStrategy = .iso8601
+        return d
+    }()
+    override func addConfiguration(to app: Application) throws {
+        try super.addConfiguration(to: app)
+        ContentConfiguration.global.use(decoder: decoder, for: .json)
+        ContentConfiguration.global.use(encoder: encoder, for: .json)
+    }
     override func addRoutes(to router: Routes) throws {
         try super.addRoutes(to: router)
+        router.defaultMaxBodySize = 20_000_000
         router.get(basePath, Int.pathComponent, use: respond)
         router.post(basePath, "search") { (request: Request) throws -> Future<LocalBusinessSearch> in
 //            request.body.collect(max: nil)
@@ -25,9 +41,11 @@ class RouteParameterTests: VaporTestCase {
             return request.body.collect(max: nil).unwrap(or: Abort(.badRequest)).tryMap { body in
 //                let decoder = JSONDecoder()
 //                decoder.dateDecodingStrategy = .iso8601
-//                let data = Data(buffer: body, byteTransferStrategy: .automatic)
-                let search = try request.content.decode(LocalBusinessSearch.self)
-                return search
+//
+                let decodedFromByteBuffer = try? self.decoder.decode(LocalBusinessSearch.self, from: body)
+                let decodedFromData = try? self.decoder.decode(LocalBusinessSearch.self, from:  Data(buffer: body, byteTransferStrategy: .automatic))
+                let decodedFromContent = try request.content.decode(LocalBusinessSearch.self)
+                return decodedFromContent
 
             }
         }
@@ -52,6 +70,20 @@ class RouteParameterTests: VaporTestCase {
     }
 
     func testCodableBody() throws {
+        let query: LocalBusinessSearch.QueryParameter = .query("pizza")
+        let location: LocalBusinessSearch.LocationParameter = .coordinate(SourcedLocationCoordinate(coordinate: LocationCoordinate(longitude: 90.0, latitude: 90.0), source: .gps))
+        let search = LocalBusinessSearch(query: query, location: location)
+        let bodyData: Data = try encoder.encode(search)
+        let byteBuffer = ByteBuffer(data: bodyData)
+        let decoded = try decoder.decode(LocalBusinessSearch.self, from: bodyData)
+        let decodedFromByteBuffer = try decoder.decode(LocalBusinessSearch.self, from: byteBuffer)
+        print(decoded)
+        try app.test(.POST, "\(basePath)/search", headers: HTTPHeaders([("Content-Type", "application/json; charset=utf-8")]), body: byteBuffer) { response in
+            let result = try response.content.decode(LocalBusinessSearch.self)
+            if case let .query(responseQueryString) = result.query, case let .query(requestQueryString) = search.query  {
+                XCTAssert(responseQueryString == requestQueryString)
+            }
+        }
 
     }
 
