@@ -6,8 +6,6 @@
 //
 
 
-import Vapor
-
 public extension Future where Value: Vapor.OptionalType {
     func assertExists(orAbortWithStatus httpStatus: HTTPStatus = .notFound,
                       reasonPhrase: String? = nil) -> Future<Value.WrappedType> {

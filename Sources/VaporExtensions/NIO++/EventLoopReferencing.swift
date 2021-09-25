@@ -1,11 +1,9 @@
 //
-//  File.swift
+//  EventLoopReferencing.swift
 //  
 //
 //  Created by Brian Strobach on 9/3/21.
 //
-
-import NIO
 
 public protocol EventLoopReferencing {
     var eventLoop: NIOCore.EventLoop { get }
@@ -62,5 +60,11 @@ public extension EventLoopFuture {
                          orFailWith error: Error,
                          completion: @escaping (Value) -> Future<V>) -> Future<V> {
         return assert(check, orFailWith: error).flatMap(completion)
+    }
+}
+
+public extension Future where Value == Void {
+    static func done(on eventLoopReferencing: EventLoopReferencing) -> Future<Void> {
+        eventLoopReferencing.eventLoop.makeSucceededFuture({}())
     }
 }

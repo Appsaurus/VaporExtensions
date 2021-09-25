@@ -5,7 +5,6 @@
 //
 //  Ports the Vapor 3 variadic methods to Vapor 4.
 
-import NIO
 
 /// Calls the supplied callback when both futures have completed.
 ///

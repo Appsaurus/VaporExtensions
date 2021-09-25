@@ -5,9 +5,6 @@
 //  Created by Brian Strobach on 8/17/21.
 //
 
-
-import Vapor
-
 public extension Future where Value: Collection {
 
     @available(*, deprecated, message: "Use async-kits's flatMapEachCompactThrowing(transform:) instead.")
@@ -17,6 +14,8 @@ public extension Future where Value: Collection {
         }
 	}
 }
+
+
 
 public extension Future {
     func flatten() -> Future<Void> {
@@ -60,5 +59,11 @@ public extension Future {
 
         flatMapThrowing(file: file, line: line, callback)
 
+    }
+}
+
+public extension Collection {
+    func flatten<Value>(on eventLoopReferencing: EventLoopReferencing) -> EventLoopFuture<[Value]> where Element == EventLoopFuture<Value> {
+        return flatten(on: eventLoopReferencing.eventLoop)
     }
 }
