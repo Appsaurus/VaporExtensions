@@ -40,6 +40,11 @@ public extension Future where Value: Vapor.OptionalType {
         }
     }
 
+    /// Alias for unwrap(or resolve:) to be more explicit when using a trailing closure syntax.
+    func unwrapOr(or resolve: @escaping () -> Future<Value.WrappedType>) -> Future<Value.WrappedType> {
+        unwrap(or: resolve)
+    }
+
     func flatMapUnwrapped<V>(or error: Error,
                              completion: @escaping (Value.WrappedType) -> Future<V>) -> Future<V> {
         return self.unwrap(or: error).flatMap(completion)
