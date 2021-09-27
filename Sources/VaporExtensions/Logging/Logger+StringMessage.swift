@@ -5,7 +5,7 @@
 //  Created by Brian Strobach on 9/1/21.
 //
 
-extension Logger {
+public extension Logger {
 
     func log(level: Logger.Level,
              _ string: @autoclosure () -> String,
