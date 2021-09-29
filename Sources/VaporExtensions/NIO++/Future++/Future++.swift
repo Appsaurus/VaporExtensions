@@ -34,21 +34,6 @@ public extension Future {
 
 public extension Future {
 
-    /// A flatMap that actually throws.
-    @inlinable func tryFlatMap<NewValue>(file: StaticString = #file,
-                                                     line: UInt = #line,
-                                                     _ callback: @escaping (Value) throws -> Future<NewValue>) -> EventLoopFuture<NewValue> {
-        flatMap(file: file, line: line) { value in
-            do {
-                return try callback(value)
-            }
-            catch {
-                return self.eventLoop.future(error: error)
-            }
-        }
-
-    }
-
     /// Alias for flatMapThrowing since the flatMapThrowing name is counterintuitive. While that name is
     /// academically correct, it does not convey the behavior which is essentially a map that throws.
 
