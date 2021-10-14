@@ -53,7 +53,7 @@ extension VaporTestCase {
     public func test(
         _ method: HTTPMethod,
         _ path: String,
-        queryItems: [URLQueryItem]? = nil,
+        queryParameters: HTTPQueryParameters? = nil,
         headers: HTTPHeaders = [:],
         body: Data? = nil,
         file: StaticString = #file,
@@ -65,7 +65,7 @@ extension VaporTestCase {
             allHeaders.add(name: key, value: value)
         }
         return try test(method, path,
-                        queryItems: queryItems,
+                        queryParameters: queryParameters,
                         headers: allHeaders,
                         body: body,
                         beforeRequest: { _ in },
@@ -75,7 +75,7 @@ extension VaporTestCase {
     public func test(
         _ method: HTTPMethod,
         _ path: String,
-        queryItems: [URLQueryItem]? = nil,
+        queryParameters: HTTPQueryParameters? = nil,
         headers: HTTPHeaders = [:],
         body: Data? = nil,
         file: StaticString = #file,
@@ -88,7 +88,7 @@ extension VaporTestCase {
             allHeaders.add(name: key, value: value)
         }
         return try app.test(method, path,
-                            queryItems: queryItems,
+                            queryParameters: queryParameters,
                             headers: allHeaders,
                             body: body,
                             beforeRequest: beforeRequest,

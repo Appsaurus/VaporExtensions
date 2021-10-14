@@ -7,6 +7,7 @@
 
 import XCTVapor
 
+public typealias HTTPQueryParameters = [String: String?]
 extension Application {
     //MARK: Request Convenience methods
 
@@ -14,38 +15,29 @@ extension Application {
     public func test(
         _ method: HTTPMethod,
         _ path: String,
-        queryItems: [URLQueryItem]? = nil,
+        _ queryParameters: HTTPQueryParameters? = nil,
         headers: HTTPHeaders = [:],
         body: Data? = nil,
         file: StaticString = #file,
         line: UInt = #line,
         afterResponse: (XCTHTTPResponse) throws -> () = { _ in }
     ) throws -> XCTApplicationTester {
-        guard let urlComponents = URLComponents(string: path)  else { throw Abort(.badRequest) }
-        var url = urlComponents
-        if let queryItems = queryItems {
-            url.queryItems = queryItems
-        }
-        guard let fullPath = url.url?.absoluteString else { throw Abort(.badRequest) }
-
-        var bodyByteBuffer: ByteBuffer?
-        if let body = body {
-            bodyByteBuffer = ByteBuffer(data: body)
-        }
-
-        return try test(method,
-                        fullPath,
-                        headers: headers,
-                        body: bodyByteBuffer,
-                        beforeRequest: { _ in },
-                        afterResponse: afterResponse)
+        try test(method,
+                 path,
+                 queryParameters: queryParameters,
+                 headers: headers,
+                 body: body,
+                 file: file,
+                 line: line,
+                 beforeRequest: { _ in },
+                 afterResponse: afterResponse)
     }
 
     @discardableResult
     public func test(
         _ method: HTTPMethod,
         _ path: String,
-        queryItems: [URLQueryItem]? = nil,
+        queryParameters: HTTPQueryParameters? = nil,
         headers: HTTPHeaders = [:],
         body: Data? = nil,
         file: StaticString = #file,
@@ -55,7 +47,14 @@ extension Application {
     ) throws -> XCTApplicationTester {
         guard let urlComponents = URLComponents(string: path)  else { throw Abort(.badRequest) }
         var url = urlComponents
-        url.queryItems = queryItems
+        if let queryParameters = queryParameters {
+            var items: [URLQueryItem] = []
+            queryParameters.forEach { (key, value) in
+                items.append(URLQueryItem(name: key, value: value))
+            }
+            url.queryItems = (url.queryItems ?? []) + items
+        }
+
         guard let fullPath = url.url?.absoluteString else { throw Abort(.badRequest) }
 
         var bodyByteBuffer: ByteBuffer?
