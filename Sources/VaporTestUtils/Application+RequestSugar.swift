@@ -23,7 +23,9 @@ extension Application {
     ) throws -> XCTApplicationTester {
         guard let urlComponents = URLComponents(string: path)  else { throw Abort(.badRequest) }
         var url = urlComponents
-        url.queryItems = queryItems
+        if let queryItems = queryItems {
+            url.queryItems = queryItems
+        }
         guard let fullPath = url.url?.absoluteString else { throw Abort(.badRequest) }
 
         var bodyByteBuffer: ByteBuffer?
