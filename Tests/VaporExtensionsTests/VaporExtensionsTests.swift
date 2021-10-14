@@ -9,10 +9,10 @@ final class VaporExtensionsTests: VaporTestCase {
     }
 
     func testMyApp() throws {
-        try app.test(.GET, "testing-vapor-apps") { response in
+        try app.test(.GET, "testing-vapor-apps", afterResponse:  { response in
             XCTAssertEqual(response.status, .ok)
             XCTAssert(response.has(content: "is super easy"))
-        }
+        })
     }
 
     func testFailedUnwrap() throws {
