@@ -7,7 +7,7 @@
 
 import XCTVapor
 
-public typealias HTTPQueryParameters = [String: String?]
+public typealias HTTPQueryParameters = [String: String]
 extension Application {
     //MARK: Request Convenience methods
 
