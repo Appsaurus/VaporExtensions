@@ -7,6 +7,7 @@
 
 import XCTest
 import XCTVapor
+import VaporExtensions
 
 public typealias AppConfigurer = (_ app: Application) throws -> Void
 
@@ -71,6 +72,13 @@ extension VaporTestCase {
                             afterResponse: afterResponse)
     }
 
+}
+
+
+public extension VaporTestCase {
+    var request: Request {
+        Request(application: app, on: app.eventLoop)
+    }
 }
 
 

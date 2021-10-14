@@ -19,7 +19,6 @@ class RouteParameterTests: VaporTestCase {
         for route in app.routes.all {
             debugPrint(route.path.string)
         }
-
     }
 
     func respond(to request: Request, withInt int: Int) -> Future<Int> {
