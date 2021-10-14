@@ -28,10 +28,10 @@ class RouteParameterTests: VaporTestCase {
     
     func testModelParameterRoute() throws {
         let id = 1
-        try app.test(.GET, "\(basePath)/\(id)", afterResponse:  { response in
+        try app.test(.GET, "\(basePath)/\(id)") { response in
             XCTAssertEqual(response.status, .ok)
             let decodedID = try response.content.decode(Int.self)
             XCTAssert(decodedID == id)
-        })
+        }
     }
 }

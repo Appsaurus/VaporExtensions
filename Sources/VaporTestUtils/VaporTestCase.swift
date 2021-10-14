@@ -48,6 +48,7 @@ open class VaporTestCase: XCTestCase {
 }
 
 extension VaporTestCase {
+
     @discardableResult
     public func test(
         _ method: HTTPMethod,
@@ -57,7 +58,29 @@ extension VaporTestCase {
         body: Data? = nil,
         file: StaticString = #file,
         line: UInt = #line,
-        beforeRequest: (inout XCTHTTPRequest) throws -> () = { _ in },
+        afterResponse: (XCTHTTPResponse) throws -> () = { _ in }
+    ) throws -> XCTApplicationTester {
+        var allHeaders = defaultRequestHeaders
+        for (key, value) in headers {
+            allHeaders.add(name: key, value: value)
+        }
+        return try test(method, path,
+                        queryItems: queryItems,
+                        headers: allHeaders,
+                        body: body,
+                        beforeRequest: { _ in },
+                        afterResponse: afterResponse)
+    }
+    @discardableResult
+    public func test(
+        _ method: HTTPMethod,
+        _ path: String,
+        queryItems: [URLQueryItem]? = nil,
+        headers: HTTPHeaders = [:],
+        body: Data? = nil,
+        file: StaticString = #file,
+        line: UInt = #line,
+        beforeRequest: (inout XCTHTTPRequest) throws -> (),
         afterResponse: (XCTHTTPResponse) throws -> () = { _ in }
     ) throws -> XCTApplicationTester {
         var allHeaders = defaultRequestHeaders
@@ -71,6 +94,8 @@ extension VaporTestCase {
                             beforeRequest: beforeRequest,
                             afterResponse: afterResponse)
     }
+
+
 
 }
 
