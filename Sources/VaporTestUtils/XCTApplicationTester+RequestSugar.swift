@@ -8,7 +8,8 @@
 import XCTVapor
 
 public typealias HTTPQueryParameters = [String: String]
-extension Application {
+
+extension XCTApplicationTester {
     //MARK: Request Convenience methods
 
     @discardableResult
@@ -45,17 +46,8 @@ extension Application {
         beforeRequest: (inout XCTHTTPRequest) throws -> (),
         afterResponse: (XCTHTTPResponse) throws -> () = { _ in }
     ) throws -> XCTApplicationTester {
-        guard let urlComponents = URLComponents(string: path)  else { throw Abort(.badRequest) }
-        var url = urlComponents
-        if let queryParameters = queryParameters {
-            var items: [URLQueryItem] = []
-            queryParameters.forEach { (key, value) in
-                items.append(URLQueryItem(name: key, value: value))
-            }
-            url.queryItems = (url.queryItems ?? []) + items
-        }
 
-        guard let fullPath = url.url?.absoluteString else { throw Abort(.badRequest) }
+        let fullPath = try path.appending(queryParameters: queryParameters)
 
         var bodyByteBuffer: ByteBuffer?
         if let body = body {
@@ -68,5 +60,46 @@ extension Application {
                         body: bodyByteBuffer,
                         beforeRequest: beforeRequest,
                         afterResponse: afterResponse)
+    }
+
+    @discardableResult
+    public func awaitTest(
+        _ method: HTTPMethod,
+        _ path: String,
+        queryParameters: HTTPQueryParameters? = nil,
+        headers: HTTPHeaders = [:],
+        body: Data? = nil,
+        file: StaticString = #file,
+        line: UInt = #line,
+        withTimeout timeout: TimeInterval = 30,
+        beforeRequest: (inout XCTHTTPRequest) throws -> () = { _ in }
+    ) throws -> XCTHTTPResponse {
+        let expectation = XCTestExpectation(description: "Wait for response.")
+        var responseValue: XCTHTTPResponse? = nil
+        let waiter = XCTWaiter()
+
+
+        try test(method, path, queryParameters: queryParameters, headers: headers, body: body, beforeRequest: beforeRequest) { response in
+            responseValue = response
+        }
+        waiter.wait(for: [expectation], timeout: timeout)
+        return try XCTUnwrap(responseValue)
+    }
+}
+
+extension String {
+    func appending(queryParameters: HTTPQueryParameters? = nil) throws -> String {
+        guard let urlComponents = URLComponents(string: self)  else { throw Abort(.badRequest) }
+        var url = urlComponents
+        if let queryParameters = queryParameters {
+            var items: [URLQueryItem] = []
+            queryParameters.forEach { (key, value) in
+                items.append(URLQueryItem(name: key, value: value))
+            }
+            url.queryItems = (url.queryItems ?? []) + items
+        }
+
+        guard let fullPath = url.url?.absoluteString else { throw Abort(.badRequest) }
+        return fullPath
     }
 }

@@ -13,6 +13,10 @@ final class VaporExtensionsTests: VaporTestCase {
             XCTAssertEqual(response.status, .ok)
             XCTAssert(response.has(content: "is super easy"))
         }
+
+        let response = try app.awaitTest(.GET, "testing-vapor-apps")
+        XCTAssertEqual(response.status, .ok)
+        XCTAssert(response.has(content: "is super easy"))
     }
 
     func testFailedUnwrap() throws {
