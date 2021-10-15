@@ -95,7 +95,26 @@ extension VaporTestCase {
                             afterResponse: afterResponse)
     }
 
-
+    @discardableResult
+    public func awaitTest(
+        _ method: HTTPMethod,
+        _ path: String,
+        queryParameters: HTTPQueryParameters? = nil,
+        headers: HTTPHeaders = [:],
+        body: Data? = nil,
+        file: StaticString = #file,
+        line: UInt = #line,
+        withTimeout timeout: TimeInterval = 30,
+        beforeRequest: (inout XCTHTTPRequest) throws -> () = { _ in }
+    ) throws -> XCTHTTPResponse {
+        return try app.awaitTest(method,
+                                 path,
+                                 queryParameters: queryParameters,
+                                 headers: headers,
+                                 body: body,
+                                 withTimeout: timeout,
+                                 beforeRequest: beforeRequest)
+    }
 
 }
 

@@ -9,12 +9,12 @@ final class VaporExtensionsTests: VaporTestCase {
     }
 
     func testMyApp() throws {
-        try app.test(.GET, "testing-vapor-apps") { response in
+        try test(.GET, "testing-vapor-apps") { response in
             XCTAssertEqual(response.status, .ok)
             XCTAssert(response.has(content: "is super easy"))
         }
 
-        let response = try app.awaitTest(.GET, "testing-vapor-apps")
+        let response = try awaitTest(.GET, "testing-vapor-apps")
         XCTAssertEqual(response.status, .ok)
         XCTAssert(response.has(content: "is super easy"))
     }
