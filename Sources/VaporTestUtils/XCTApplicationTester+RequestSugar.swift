@@ -81,6 +81,7 @@ extension XCTApplicationTester {
 
         try test(method, path, queryParameters: queryParameters, headers: headers, body: body, beforeRequest: beforeRequest) { response in
             responseValue = response
+            expectation.fulfill()
         }
         waiter.wait(for: [expectation], timeout: timeout)
         return try XCTUnwrap(responseValue)
