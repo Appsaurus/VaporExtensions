@@ -28,7 +28,8 @@ let package = Package(
             dependencies: [.product(name: "Vapor", package: "vapor")]),
         .target(
             name: "VaporTestUtils",
-            dependencies: [.product(name: "Vapor", package: "vapor"),
+            dependencies: [.target(name: "VaporExtensions"),
+                           .product(name: "Vapor", package: "vapor"),
                            .product(name: "XCTVapor", package: "vapor")]),
         .target(name: "ExampleApp",  dependencies: [
             .product(name: "Vapor", package: "vapor")
