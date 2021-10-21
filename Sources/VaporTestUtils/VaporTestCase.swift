@@ -35,7 +35,7 @@ open class VaporTestCase: XCTestCase {
     }
 
     open func createApplication() throws -> Application {
-        Application(.testing)
+        Application(try Environment.detect())
     }
 
     open func addConfiguration(to app: Application) throws {

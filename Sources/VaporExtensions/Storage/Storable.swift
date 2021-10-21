@@ -56,10 +56,11 @@ open class RequestStorableMiddleware<S: Storable>: Middleware {
 
     open func respond(to req: Request, chainingTo next: Responder) -> EventLoopFuture<Response> {
         func respond(setting value: S?) -> EventLoopFuture<Response> {
-            lock.lock()
-            req.storage.set(value)
-            lock.unlock()
-            return next.respond(to: req)
+            lock.withLock {
+                req.storage.set(value)
+                return next.respond(to: req)
+            }
+
         }
         if let value = self.provideValue(for: req) {
             return respond(setting: value)
