@@ -51,12 +51,14 @@ public extension Storage {
 open class RequestStorableMiddleware<S: Storable>: Middleware {
     open var valueProvider: (Request) -> S? = { _ in return nil }
     open var asyncValueProvider: ((Request) -> Future<S?>) = { $0.future(nil) }
-
+    private let lock = Lock()
     public init(){}
 
     open func respond(to req: Request, chainingTo next: Responder) -> EventLoopFuture<Response> {
         func respond(setting value: S?) -> EventLoopFuture<Response> {
+            lock.lock()
             req.storage.set(value)
+            lock.unlock()
             return next.respond(to: req)
         }
         if let value = self.provideValue(for: req) {
