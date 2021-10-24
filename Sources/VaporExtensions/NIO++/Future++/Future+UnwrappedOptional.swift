@@ -4,6 +4,7 @@
 //
 //  Created by Brian Strobach on 9/2/21.
 //
+import NIO
 
 public func ??<T>(lhs: Future<T?>, rhs: Future<T>) -> Future<T> {
     return lhs.unwrap(or: { rhs })
