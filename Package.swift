@@ -20,7 +20,7 @@ let package = Package(
             targets: ["VaporTestUtils"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", .exact("4.48.8"))
+        .package(url: "https://github.com/vapor/vapor.git", .upToNextMajor(from: "4.0.0"))
     ],
     targets: [
         .target(
