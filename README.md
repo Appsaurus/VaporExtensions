@@ -1,3 +1,3 @@
 # VaporExtensions
 
-A description of this package.
+A collection of small vapor packages. WIP.
