@@ -13,9 +13,6 @@ public protocol Parameter {
     static var parameter: String { get }
     static var pathComponent: PathComponent { get }
 }
-extension PathComponentRepresentable where Self: Parameter {
-
-}
 
 extension Parameter {
     public static var pathComponent: PathComponent { .parameter(parameter) }
