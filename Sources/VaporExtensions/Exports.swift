@@ -7,3 +7,4 @@
 
 @_exported import Foundation
 @_exported import Vapor
+@_exported import RoutingKitExtensions

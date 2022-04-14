@@ -47,6 +47,15 @@
         }
       },
       {
+        "package": "RoutingKitExtensions",
+        "repositoryURL": "https://github.com/Appsaurus/RoutingKitExtensions",
+        "state": {
+          "branch": null,
+          "revision": "cdfa7c8ce72526ee02e4657739968893ca82eb4f",
+          "version": "1.0.1"
+        }
+      },
+      {
         "package": "swift-backtrace",
         "repositoryURL": "https://github.com/swift-server/swift-backtrace.git",
         "state": {
