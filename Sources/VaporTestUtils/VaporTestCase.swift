@@ -14,32 +14,57 @@ public typealias AppConfigurer = (_ app: Application) throws -> Void
 open class VaporTestCase: XCTestCase {
 
     open lazy var loggingLevel: LoggingLevel = .none
-
+    
     open var app: Application!
-
+    
+    open var skipInvocationInReleaseMode: Bool { false }
+    
+    open var validInvocationEnvironments: [Environment] {
+        return [.development, .testing]
+    }
+    
+    open var validInvocationPlatforms: [TestInvocationPlatform] {
+        var cases = TestInvocationPlatform.allCases
+        if let unknownIndex = TestInvocationPlatform.allCases.firstIndex(of: .unknown) {
+            cases.remove(at: unknownIndex)
+        }
+        return cases
+    }
+    
     open var configurer: AppConfigurer{
         return { _ in }
     }
-
+    
     open var defaultRequestHeaders: HTTPHeaders = [:]
-
-    override open func setUpWithError() throws {
-        try super.setUpWithError()
+    
+    open func createApplication() throws -> Application {
+        let app = Application(try Environment.detect())
+        try configurer(app)
+        return app
+    }
+    
+    open override func setUp() async throws {
+        try skipInvalidEnvironments()
+        try await super.setUp()
         app = try createApplication()
         try addConfiguration(to: app)
+        try await afterAppConfiguration()
     }
 
-    open override func tearDownWithError() throws {
-        try super.tearDownWithError()
+    open override func tearDown() async throws {
+        try skipInvalidEnvironments()
+        try await super.tearDown()
+        try await beforeAppShutdown()
         app.shutdown()
     }
+    
 
-    open func createApplication() throws -> Application {
-        Application(try Environment.detect())
-    }
+    
+    open func afterAppConfiguration() async throws {}
+
+    open func beforeAppShutdown() async throws {}
 
     open func addConfiguration(to app: Application) throws {
-        try configurer(app)
         try addRoutes(to: app.routes)
     }
 
@@ -47,8 +72,39 @@ open class VaporTestCase: XCTestCase {
 
 }
 
+
+public enum TestInvocationPlatform: CaseIterable, Equatable {
+    case macOS
+    case tvOS
+    case watchOS
+    case iOS
+    case linux
+    case unknown
+    static var current: TestInvocationPlatform {
+#if os(macOS)
+        return .macOS
+#elseif os(tvOS)
+        return .tvOS
+#elseif os(watchOS)
+        return .watchOS
+#elseif os(iOS)
+        return .iOS
+#elseif os(Linux)
+        return .linux
+#else
+        return .unknown
+#endif
+    }
+}
+
 extension VaporTestCase {
 
+    func skipInvalidEnvironments() throws {
+        try skipUnlessPlatformEquals(equalsAny: validInvocationPlatforms)
+        try skipUnlessEnvironmentEquals(equalsAny: validInvocationEnvironments)
+        if skipInvocationInReleaseMode { try skipIfReleaseEnvironment() }
+    }
+    
     @discardableResult
     public func test(
         _ method: HTTPMethod,
@@ -122,6 +178,61 @@ extension VaporTestCase {
 public extension VaporTestCase {
     var request: Request {
         Request(application: app, on: app.eventLoop)
+    }
+}
+
+
+
+extension XCTestCase {
+    
+    func skipIfPlatform(equalsAny environments: TestInvocationPlatform...) throws {
+        try XCTSkipIf(TestInvocationPlatform.current.equalToAny(of: environments))
+    }
+    
+    func skipIfPlatform(equalsAny environments: [TestInvocationPlatform]) throws {
+        try XCTSkipIf(TestInvocationPlatform.current.equalToAny(of: environments))
+    }
+
+    func skipUnlessPlatformEquals(equalsAny environments: TestInvocationPlatform...) throws {
+        try XCTSkipUnless(TestInvocationPlatform.current.equalToAny(of: environments))
+    }
+    
+    func skipUnlessPlatformEquals(equalsAny environments: [TestInvocationPlatform]) throws {
+        try XCTSkipUnless(TestInvocationPlatform.current.equalToAny(of: environments))
+    }
+    
+    func skipIfEnvironment(equalsAny environments: Environment...) throws {
+        try XCTSkipIf(Environment.detect().equalToAny(of: environments))
+    }
+    
+    func skipIfEnvironment(equalsAny environments: [Environment]) throws {
+        try XCTSkipIf(Environment.detect().equalToAny(of: environments))
+    }
+
+    func skipUnlessEnvironmentEquals(equalsAny environments: Environment...) throws {
+        try XCTSkipUnless(Environment.detect().equalToAny(of: environments))
+    }
+    
+    func skipUnlessEnvironmentEquals(equalsAny environments: [Environment]) throws {
+        try XCTSkipUnless(Environment.detect().equalToAny(of: environments))
+    }
+    
+    func skipIfReleaseEnvironment() throws {
+        try XCTSkipIf(Environment.detect().isRelease)
+    }
+}
+
+
+fileprivate extension Equatable {
+    
+    func equalToAny(of items: [Self]) -> Bool {
+        return items.contains(where: { (item) -> Bool in
+            item == self
+        })
+    }
+    
+    func equalToAny(of items: Self...) -> Bool {
+        return equalToAny(of: items)
     }
 }
 
