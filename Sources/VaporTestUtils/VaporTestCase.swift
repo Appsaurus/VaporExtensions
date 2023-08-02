@@ -23,6 +23,8 @@ open class VaporTestCase: XCTestCase {
         return [.development, .testing]
     }
     
+    open var applicationEnvironment: Environment { .testing }
+    
     open var validInvocationPlatforms: [TestInvocationPlatform] {
         var cases = TestInvocationPlatform.allCases
         if let unknownIndex = TestInvocationPlatform.allCases.firstIndex(of: .unknown) {
@@ -38,7 +40,7 @@ open class VaporTestCase: XCTestCase {
     open var defaultRequestHeaders: HTTPHeaders = [:]
     
     open func createApplication() throws -> Application {
-        let app = Application(try Environment.detect())
+        let app = Application(applicationEnvironment)
         try configurer(app)
         return app
     }
