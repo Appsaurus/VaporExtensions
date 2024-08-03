@@ -48,24 +48,25 @@ public extension Storage {
     }
 }
 
-open class RequestStorableMiddleware<S: Storable>: Middleware {
+open class RequestStorableMiddleware<S: Storable>: AsyncMiddleware {
     open var valueProvider: (Request) -> S? = { _ in return nil }
-    open var asyncValueProvider: ((Request) -> Future<S?>) = { $0.future(nil) }
+    open var asyncValueProvider: (Request) async -> S? = { _ in return nil }
     public init(){}
 
-    open func respond(to req: Request, chainingTo next: Responder) -> EventLoopFuture<Response> {
-        func respond(setting value: S?) -> EventLoopFuture<Response> {
-            req.storage.set(value)
-            return next.respond(to: req)
+    public func respond(to request: Request,
+                        chainingTo next: any AsyncResponder) async throws -> Response {
+        
+        func respond(setting value: S?) async throws -> Response {
+            request.storage.set(value)
+            return try await next.respond(to: request)
         }
 
-        if let value = self.provideValue(for: req) {
-            return respond(setting: value)
+        if let value = self.provideValue(for: request) {
+            return try await respond(setting: value)
         }
         else {
-            return self.provideValueAsync(for: req).flatMap { value in
-                return respond(setting: value)
-            }
+            let value = await self.provideValueAsync(for: request)
+            return try await respond(setting: value)
         }
     }
 
@@ -73,7 +74,7 @@ open class RequestStorableMiddleware<S: Storable>: Middleware {
         return valueProvider(req)
     }
 
-    open func provideValueAsync(for req: Request) -> Future<S?> {
-        return asyncValueProvider(req)
+    open func provideValueAsync(for req: Request) async -> S? {
+        return await asyncValueProvider(req)
     }
 }

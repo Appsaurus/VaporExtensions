@@ -32,17 +32,17 @@ public extension EventLoopReferencing {
         eventLoop.future(value)
     }
 
-    func toFutureSuccess() -> Future<Void> {
+    func toFutureSuccess() -> EventLoopFuture<Void> {
         eventLoop.makeSucceededVoidFuture()
     }
 
-    func future<V>(_ value: V) -> Future<V> {
+    func future<V>(_ value: V) -> EventLoopFuture<V> {
         toFuture(value)
     }
 }
 
 public extension EventLoopFuture {
-    func assert(_ check: @escaping (Value) -> Bool, orFailWith error: Error) -> Future<Value> {
+    func assert(_ check: @escaping (Value) -> Bool, orFailWith error: Error) -> EventLoopFuture<Value> {
         return flatMap { value in
             guard check(value) else {
                 return self.fail(with: error)
@@ -53,19 +53,19 @@ public extension EventLoopFuture {
 
     func mapAsserting<V>(_ check: @escaping (Value) -> Bool,
                          orFailWith error: Error,
-                         completion: @escaping (Value) -> V) -> Future<V> {
+                         completion: @escaping (Value) -> V) -> EventLoopFuture<V> {
         return assert(check, orFailWith: error).map(completion)
     }
 
     func flatMapAsserting<V>(_ check: @escaping (Value) -> Bool,
                          orFailWith error: Error,
-                         completion: @escaping (Value) -> Future<V>) -> Future<V> {
+                         completion: @escaping (Value) -> EventLoopFuture<V>) -> EventLoopFuture<V> {
         return assert(check, orFailWith: error).flatMap(completion)
     }
 }
 
-public extension Future where Value == Void {
-    static func done(on eventLoopReferencing: EventLoopReferencing) -> Future<Void> {
+public extension EventLoopFuture where Value == Void {
+    static func done(on eventLoopReferencing: EventLoopReferencing) -> EventLoopFuture<Void> {
         eventLoopReferencing.eventLoop.makeSucceededFuture({}())
     }
 }

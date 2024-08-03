@@ -45,31 +45,3 @@ public extension Response{
         return self
     }
 }
-
-public extension Future where Value: Response{
-    @discardableResult
-    func validate<S: Sequence>(statusCode acceptableStatusCodes: S) -> Future<Value> where S.Iterator.Element == UInt {
-        return self.flatMapThrowing { response in
-            return try response.validate(statusCode: acceptableStatusCodes)
-        }
-    }
-
-    @discardableResult
-    func throwIf<S: Sequence>(statusCode unacceptableStatusCodes: S) -> Future<Value> where S.Iterator.Element == UInt {
-        return self.flatMapThrowing { response in
-            return try response.throwIf(statusCode: unacceptableStatusCodes)
-        }
-    }
-
-    @discardableResult
-    func throwIf(statusCode unacceptableStatusCodes: HTTPResponseStatus...) -> Future<Value>{
-        return throwIf(statusCode: unacceptableStatusCodes)
-    }
-
-    @discardableResult
-    func throwIf(statusCode unacceptableStatusCodes: [HTTPResponseStatus]) -> Future<Value>{
-        return self.flatMapThrowing { response in
-            return try response.throwIf(statusCode: unacceptableStatusCodes)
-        }
-    }
-}

@@ -21,36 +21,44 @@ extension Cacheable {
 }
 
 public extension Cache {
-    func getOptional<M: Cacheable>(_ type: M.Type) -> Future<M?> {
-        return get(type.cacheKey, as: type)
+    func getOptional<M: Cacheable>(_ type: M.Type) async -> M? {
+        return try? await get(type.cacheKey, as: type)
     }
 
-    func get<M: Cacheable>(_ type: M.Type, defaultValue: @autoclosure @escaping () -> Future<M>) -> Future<M> {
-        return defaultValue().flatMap { value in
-            return self.get(type, defaultValue: value)
+    func get<M: Cacheable>(_ type: M.Type, 
+                           defaultValue: @autoclosure @escaping () -> M) async throws -> M {
+        let v: M? = defaultValue()
+        return try await self.get(type, defaultValue: v)
+    }
+
+    func get<M: Cacheable>(_ type: M.Type, 
+                           defaultValue: M? = M.defaultValue) async throws -> M {
+
+        if let value = await getOptional(type) {
+            return value
         }
+        guard let defaultValue else {
+            throw CacheableError.didNotSupplyDefaultValue(type: M.self)
+        }
+        try await set(cachedValue: defaultValue)
+        return defaultValue
     }
 
-    func get<M: Cacheable>(_ type: M.Type, defaultValue: M? = M.defaultValue) -> Future<M> {
-        let key = type.cacheKey
-        return get(key, as: type).unwrap(or: {
-            return self.set(key, to: defaultValue).transform(to: defaultValue).unwrap(orError: CacheableError.didNotSupplyDefaultValue(type: M.self))
-        })
-    }
-
-    @discardableResult
-    func set<M: Cacheable>(cachedValue: M) -> Future<Void> {
-        return set(M.cacheKey, to: cachedValue)
+    func set<M: Cacheable>(cachedValue: M) async throws {
+        return try await set(M.cacheKey, to: cachedValue)
     }
 }
 
-open class RequestCacheableMiddleware<C: Cacheable>: Middleware {
+open class RequestCacheableMiddleware<C: Cacheable>: AsyncMiddleware {
+    public func respond(to request: Vapor.Request, 
+                        chainingTo next: any Vapor.AsyncResponder) async throws -> Vapor.Response {
+        let cachedValue = try await request.application.cache.get(C.self)
+        try await request.cache.set(cachedValue: cachedValue)
+        return try await next.respond(to: request)
+    
+    }
+    
     public init(){}
 
-    open func respond(to req: Request, chainingTo next: Responder) -> EventLoopFuture<Response> {
-        return req.application.cache.get(C.self).flatMap { cachedValue in
-            req.cache.set(cachedValue: cachedValue)
-            return next.respond(to: req)
-        }
-    }
+    
 }

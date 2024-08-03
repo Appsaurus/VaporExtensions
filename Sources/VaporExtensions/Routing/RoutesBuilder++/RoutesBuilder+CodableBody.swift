@@ -11,7 +11,7 @@ import RoutingKitExtensions
 public extension RoutesBuilder {
 
     @discardableResult
-    func get<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
+    func get<C: Codable, R: AsyncResponseEncodable>(_ body: C.Type = C.self,
                                                  at path: PathComponentRepresentable...,
                                                  use closure: @escaping (Request, C) throws -> R) -> Route {
         on(.GET, body, at: path, use: closure)
@@ -19,7 +19,7 @@ public extension RoutesBuilder {
     }
 
     @discardableResult
-    func get<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
+    func get<C: Codable, R: AsyncResponseEncodable>(_ body: C.Type = C.self,
                                                  at path: [PathComponentRepresentable],
                                                  use closure: @escaping (Request, C) throws -> R) -> Route {
         on(.GET, body, at: path, use: closure)
@@ -27,21 +27,21 @@ public extension RoutesBuilder {
     }
 
     @discardableResult
-    func put<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
+    func put<C: Codable, R: AsyncResponseEncodable>(_ body: C.Type = C.self,
                                                  at path: PathComponentRepresentable...,
                                                  use closure: @escaping (Request, C) throws -> R) -> Route {
         on(.PUT, body, at: path, use: closure)
     }
 
     @discardableResult
-    func put<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
+    func put<C: Codable, R: AsyncResponseEncodable>(_ body: C.Type = C.self,
                                                  at path: [PathComponentRepresentable],
                                                  use closure: @escaping (Request, C) throws -> R) -> Route {
         on(.PUT, body, at: path, use: closure)
     }
 
     @discardableResult
-    func post<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
+    func post<C: Codable, R: AsyncResponseEncodable>(_ body: C.Type = C.self,
                                                   at path: PathComponentRepresentable...,
                                                   use closure: @escaping (Request, C) throws -> R) -> Route {
         on(.POST, body, at: path, use: closure)
@@ -49,7 +49,7 @@ public extension RoutesBuilder {
     }
 
     @discardableResult
-    func post<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
+    func post<C: Codable, R: AsyncResponseEncodable>(_ body: C.Type = C.self,
                                                   at path: [PathComponentRepresentable],
                                                   use closure: @escaping (Request, C) throws -> R) -> Route {
         on(.POST, body, at: path, use: closure)
@@ -57,35 +57,35 @@ public extension RoutesBuilder {
     }
 
     @discardableResult
-    func patch<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
+    func patch<C: Codable, R: AsyncResponseEncodable>(_ body: C.Type = C.self,
                                                    at path: PathComponentRepresentable...,
                                                    use closure: @escaping (Request, C) throws -> R) -> Route {
         on(.PATCH, body, at: path, use: closure)
     }
 
     @discardableResult
-    func patch<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
+    func patch<C: Codable, R: AsyncResponseEncodable>(_ body: C.Type = C.self,
                                                    at path: [PathComponentRepresentable],
                                                    use closure: @escaping (Request, C) throws -> R) -> Route {
         on(.PATCH, body, at: path, use: closure)
     }
 
     @discardableResult
-    func delete<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
+    func delete<C: Codable, R: AsyncResponseEncodable>(_ body: C.Type = C.self,
                                                     at path: PathComponentRepresentable...,
                                                     use closure: @escaping (Request, C) throws -> R) -> Route {
         on(.DELETE, body, at: path, use: closure)
     }
 
     @discardableResult
-    func delete<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
+    func delete<C: Codable, R: AsyncResponseEncodable>(_ body: C.Type = C.self,
                                                     at path: [PathComponentRepresentable],
                                                     use closure: @escaping (Request, C) throws -> R) -> Route {
         on(.DELETE, body, at: path, use: closure)
     }
 
     @discardableResult
-    func on<C: Codable, R: ResponseEncodable>(_ method: HTTPMethod,
+    func on<C: Codable, R: AsyncResponseEncodable>(_ method: HTTPMethod,
                                                 _ body: C.Type = C.self,
                                                 at path: PathComponentRepresentable...,
                                                 use closure: @escaping (Request, C) throws -> R) -> Route {
@@ -94,7 +94,7 @@ public extension RoutesBuilder {
     }
 
     @discardableResult
-    func on<C: Codable, R: ResponseEncodable>(_ method: HTTPMethod,
+    func on<C: Codable, R: AsyncResponseEncodable>(_ method: HTTPMethod,
                                                 _ body: C.Type = C.self,
                                                 at path: [PathComponentRepresentable],
                                                 use closure: @escaping (Request, C) throws -> R) -> Route {
@@ -105,101 +105,3 @@ public extension RoutesBuilder {
 
     }
 }
-
-//public extension RoutesBuilder {
-//
-//    @discardableResult
-//    func get<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
-//                                                 at path: PathComponentRepresentable...,
-//                                                 use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(.GET, body, at: path, use: closure)
-//
-//    }
-//
-//    @discardableResult
-//    func get<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
-//                                                 at path: [PathComponentRepresentable],
-//                                                 use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(.GET, body, at: path, use: closure)
-//
-//    }
-//
-//    @discardableResult
-//    func put<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
-//                                                 at path: PathComponentRepresentable...,
-//                                                 use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(.PUT, body, at: path, use: closure)
-//    }
-//
-//    @discardableResult
-//    func put<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
-//                                                 at path: [PathComponentRepresentable],
-//                                                 use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(.PUT, body, at: path, use: closure)
-//    }
-//
-//    @discardableResult
-//    func post<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
-//                                                  at path: PathComponentRepresentable...,
-//                                                  use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(.POST, body, at: path, use: closure)
-//
-//    }
-//
-//    @discardableResult
-//    func post<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
-//                                                  at path: [PathComponentRepresentable],
-//                                                  use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(.POST, body, at: path, use: closure)
-//
-//    }
-//
-//    @discardableResult
-//    func patch<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
-//                                                   at path: PathComponentRepresentable...,
-//                                                   use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(.PATCH, body, at: path, use: closure)
-//    }
-//
-//    @discardableResult
-//    func patch<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
-//                                                   at path: [PathComponentRepresentable],
-//                                                   use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(.PATCH, body, at: path, use: closure)
-//    }
-//
-//    @discardableResult
-//    func delete<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
-//                                                    at path: PathComponentRepresentable...,
-//                                                    use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(.DELETE, body, at: path, use: closure)
-//    }
-//
-//    @discardableResult
-//    func delete<C: Codable, R: ResponseEncodable>(_ body: C.Type = C.self,
-//                                                    at path: [PathComponentRepresentable],
-//                                                    use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(.DELETE, body, at: path, use: closure)
-//    }
-//
-//    @discardableResult
-//    func on<C: Codable, R: ResponseEncodable>(_ method: HTTPMethod,
-//                                                _ body: C.Type = C.self,
-//                                                at path: PathComponentRepresentable...,
-//                                                use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(method, body, at: path, use: closure)
-//
-//    }
-//
-//    @discardableResult
-//    func on<C: Codable, R: ResponseEncodable>(_ method: HTTPMethod,
-//                                                _ body: C.Type = C.self,
-//                                                at path: [PathComponentRepresentable],
-//                                                use closure: @escaping (Request, C) throws -> R) -> Route {
-//        on(method, path) { request -> R in
-//            let params = try request.parameters.next(P.self)
-//            return try closure(request, params)
-//        }
-//
-//    }
-//}
