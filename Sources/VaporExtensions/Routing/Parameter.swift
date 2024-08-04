@@ -23,9 +23,19 @@ extension Int: Parameter {
     public static var parameter: String { "int" }
 }
 
+extension Double: Parameter {
+    public typealias ResolvedParameter = Double
+    public static var parameter: String { "double" }
+}
+
 extension String: Parameter {
     public typealias ResolvedParameter = String
     public static var parameter: String { "string" }
+}
+
+extension Bool: Parameter {
+    public typealias ResolvedParameter = Bool
+    public static var parameter: String { "bool" }
 }
 
 extension UUID: Parameter {
