@@ -5,6 +5,7 @@ public extension Comparable {
         return comparison(self, value)
     }
 
+    @discardableResult
     func `is`(_ comparison: @escaping (Self, Self) -> Bool, _ value: Self, or error: Error) throws -> Self {
         try self.is(comparison, value)
             .is(true, or: error)
