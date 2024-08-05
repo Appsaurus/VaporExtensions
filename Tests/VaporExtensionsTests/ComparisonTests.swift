@@ -61,11 +61,4 @@ final class ComparisonTests: VaporTestCase {
 
         XCTAssertThrowsError(try testValue.is(>=, greaterValue, or: error))
     }
-
-
-    func futureTestValue(on request: Request) -> EventLoopFuture<Int> {
-        request.future(testValue)
-    }
-
-
 }

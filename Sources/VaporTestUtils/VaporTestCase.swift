@@ -179,7 +179,7 @@ public extension VaporTestCase {
 
 public extension VaporTestCase {
     var request: Request {
-        Request(application: app, on: app.eventLoop)
+        Request(application: app, on: app.eventLoopGroup.next())
     }
 }
 
