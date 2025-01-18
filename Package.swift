@@ -16,8 +16,8 @@ let package = Package(
             name: "VaporExtensions",
             targets: ["VaporExtensions"]),
         .library(
-            name: "VaporTestUtils",
-            targets: ["VaporTestUtils"]),
+            name: "XCTVaporExtensions",
+            targets: ["XCTVaporExtensions"]),
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
@@ -31,7 +31,7 @@ let package = Package(
                 .product(name: "RoutingKitExtensions", package: "RoutingKitExtensions")
             ]),
         .target(
-            name: "VaporTestUtils",
+            name: "XCTVaporExtensions",
             dependencies: [.target(name: "VaporExtensions"),
                            .product(name: "Vapor", package: "vapor"),
                            .product(name: "XCTVapor", package: "vapor")]),
@@ -41,8 +41,8 @@ let package = Package(
 
         .testTarget(name: "VaporExtensionsTests", dependencies: [
             .target(name: "ExampleApp"),
-            .target(name: "VaporTestUtils"),
-            .target(name: "VaporExtensions")
+            .target(name: "VaporExtensions"),
+            .target(name: "XCTVaporExtensions")
         ])
     ]
 )

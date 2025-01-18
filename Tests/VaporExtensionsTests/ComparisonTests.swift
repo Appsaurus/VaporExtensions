@@ -6,7 +6,7 @@
 //
 
 import VaporExtensions
-import VaporTestUtils
+import XCTVaporExtensions
 final class ComparisonTests: VaporTestCase {
 
     let testValue = 1

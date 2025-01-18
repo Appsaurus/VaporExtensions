@@ -1,5 +1,5 @@
 import ExampleApp
-import VaporTestUtils
+import XCTVaporExtensions
 import VaporExtensions
 
 final class VaporExtensionsTests: VaporTestCase {

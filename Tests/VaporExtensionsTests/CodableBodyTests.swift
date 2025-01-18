@@ -8,7 +8,7 @@
 import XCTest
 import XCTVapor
 import VaporExtensions
-import VaporTestUtils
+import XCTVaporExtensions
 import CoreFoundation
 
 struct TestCodable: Codable, Equatable, Content {

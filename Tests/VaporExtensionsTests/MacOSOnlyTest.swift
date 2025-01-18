@@ -8,7 +8,7 @@
 import ExampleApp
 import XCTest
 import XCTVapor
-import VaporTestUtils
+import XCTVaporExtensions
 
 final class MacOSOnlyTests: VaporTestCase {
     
